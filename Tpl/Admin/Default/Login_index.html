@@ -1,0 +1,83 @@
+{__NOLAYOUT__}<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset={:C('DEFAULT_CHARSET')}" />
+<title>{:L('system_name')} Powered by Ycms</title>
+<load href='./Public/Css/login.css' />
+<load href="./Public/Js/jquery.min.js"/>
+<load href="./Public/Js/jquery.validate.js"/>
+<load href="./Public/Js/jquery.form.js"/>
+<load href="./Public/Js/my.js"/>
+
+<!--[if IE 6]>
+		<script src="./Public/Js/png.js"  type="text/javascript" ></script>
+		<script type="text/javascript">
+		DD_belatedPNG.fix(' .login_box ');
+		</script>
+<![endif]-->
+</head>
+<body onLoad="reload()" id="loginbg" >
+<div class="head">
+  <div class="top_logo"></div>
+</div>
+<div class="foot">
+    <form action="{:U('Login/doLogin')}" method="post" name="login" id="form1">
+		<div class="tips" id="result"></div>
+        <div class="login">
+            <span>
+                <label for="name">{:L('account')}:</label> 
+                <input type="text" id="username" name="username" class="text_v" />
+            </span>
+            <span>
+                <label for="password">{:L('password')}:</label>
+                <input type="password" id="password" name="password" class="text_v" />
+            </span>
+			{if $admin_verify}
+                <span>
+                    <label for="verifyCode">{:L('verify')}:</label>
+                    <input name="verifyCode" type="text"  id="verifyCode"  maxlength="4" class="text_c"/><img src="{:U('Home/Index/verify')}" onclick="javascript:resetVerifyCode();" class="checkcode" align="absmiddle"  title="{:L('resetVerifyCode')}" id="verifyImage"/></li>
+                </span>
+			{/if}
+            </div>
+			<input type="hidden" name="ajax" value="1">
+            <div class="login_sub">
+                <button type="submit">{:L('login')}</button>
+                <button type="reset">{:L('reset')}</button>
+            </div>
+            
+        </div>
+    </form>
+</div>
+<script language="JavaScript">
+jQuery(document).ready(function($){
+	$('#form1').ajaxForm({
+		beforeSend:function(){
+			$('#result').html('登陆中，请稍候...').show();;
+		 },
+		success:       complete,  // post-submit callback
+		dataType: 'json'
+	});
+
+
+});
+function complete(data){
+        if (data.status==1)
+        {
+		 $('#result').html(data.info).show();
+		 //art.dialog.tips('{:L("logined_ok")}',2);
+		 setTimeout(function(){	window.location.href = '{:U("Index/index")}';},1000);
+        }else{
+            $('#result').html(data.info).show();
+        }
+}
+function reload(){
+	document.login.username.focus();
+	if(self!=top){
+	 window.top.location.href = '{:U("Login/index")}';
+	}
+	resetVerifyCode();
+}
+
+</script>
+</body>
+</html>
